@@ -178,18 +178,48 @@ WHERE Total > (SELECT AVG(Total) FROM invoices);
 -- ------------------------------------------------------------
 -- Query 15: Customer IDs, full names and total spent,
 -- descending by spend.
--- TODO
+-- Sanity check: the 59 customer totals sum to $2,328.60,
+-- the grand total of all invoices.
+-- Result: 59 customers (top spender: Helena Holy, $49.62)
 -- ------------------------------------------------------------
+SELECT c.CustomerId,
+       c.FirstName || ' ' || c.LastName AS FullName,
+       ROUND(SUM(i.Total), 2) AS TotalSpent
+FROM customers c
+JOIN invoices i ON c.CustomerId = i.CustomerId
+GROUP BY c.CustomerId
+ORDER BY TotalSpent DESC;
 
 
+
 -- ------------------------------------------------------------
--- Query 16: Number of purchasing customers, number of
--- tracks purchased, and average tracks per customer (integer).
--- TODO
+-- Query 16: Number of purchasing customers, number of tracks
+-- purchased, and average tracks per customer (integer).
+-- Notes:
+--   * COUNT(DISTINCT CustomerId) so repeat buyers count once
+--   * SUM(Quantity) counts units sold, not line items
+--   * Integer division truncates 2240/59 = 37.96 to 37
+-- Result: 59 customers, 2,240 tracks, 37 tracks/customer
 -- ------------------------------------------------------------
+SELECT COUNT(DISTINCT i.CustomerId) AS "Clientes Con Compra",
+       SUM(ii.Quantity) AS "Tracks Comprados",
+       SUM(ii.Quantity) / COUNT(DISTINCT i.CustomerId) AS "Promedio Por Cliente"
+FROM invoices i
+JOIN invoice_items ii ON i.InvoiceId = ii.InvoiceId;
+
 
 
 -- ------------------------------------------------------------
 -- Query 17: Monthly revenue during 2009.
--- TODO
+-- strftime('%m', ...) extracts the month for grouping;
+-- strftime('%Y', ...) filters the year. ISO month strings
+-- ('01'..'12') sort chronologically by default.
+-- Sanity check: months sum to $449.46, matching Query 11.
+-- Result: 12 rows
 -- ------------------------------------------------------------
+SELECT strftime('%m', InvoiceDate) AS Mes,
+       ROUND(SUM(Total), 2) AS Facturacion
+FROM invoices
+WHERE strftime('%Y', InvoiceDate) = '2009'
+GROUP BY Mes
+ORDER BY Mes;
