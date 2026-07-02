@@ -21,6 +21,7 @@ Chinook models a digital music store with 11 tables:
 - Multi-table `JOIN`s, including a 3-table chain (employees → customers → invoices)
 - `LEFT JOIN` vs `INNER JOIN` — keeping empty groups in the result
 - `COUNT(*)` vs `COUNT(column)` — correct zero counts with NULLs
+- `COUNT(DISTINCT)` for unique-entity counts
 - Grouping by primary key instead of name to handle duplicate labels
 - Date handling with `date()` and `strftime()`, safe date-range filtering
 - Aggregations (`COUNT`, `SUM`, `AVG`, `ROUND`) with `GROUP BY` / `ORDER BY`
@@ -32,6 +33,8 @@ Chinook models a digital music store with 11 tables:
 - **Pricing is binary**: all video content (TV Shows, Sci-Fi, Drama…) sells at $1.99; every music genre is flat at $0.99.
 - **Sales team**: three Sales Support Agents cover 100% of customers; Jane Peacock leads with $833.04 of the $2,328.60 total.
 - **2009 vs 2013**: fewer invoices in 2013 (80 vs 83) but *higher* revenue ($450.58 vs $449.46) — the average ticket grew.
+- **Customer value**: the top spender (Helena Holý) accounts for $49.62 of revenue; the 59 customer totals reconcile exactly with the $2,328.60 grand total.
+- **Purchase behavior**: 59 buyers purchased 2,240 tracks — an average of 37 tracks per customer.
 - **Data quirks**: four playlist names are duplicated under different IDs, and two playlists are empty — handled with `GROUP BY PlaylistId` + `LEFT JOIN`.
 
 ## 📁 Files
