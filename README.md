@@ -2,7 +2,7 @@
 
 SQL analysis of the **Chinook database** — a digital music store dataset (SQLite) — covering 17 queries from basic filtering to multi-table JOINs, aggregations, date functions, and subqueries.
 
-> Part of my Data Analytics portfolio. Also see my [Northwind SQL project](https://github.com/eleazarsoto/sql-northwind-analysis) (39 queries).
+> Part of my Data Analytics portfolio. Also see my [Northwind SQL project]([https://github.com/eleazarsoto/sql-northwind-analysis]) (39 queries).
 
 ## 📊 Dataset
 
