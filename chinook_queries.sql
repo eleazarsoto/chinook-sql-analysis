@@ -30,12 +30,17 @@ WHERE Country = 'Brazil';
 -- ------------------------------------------------------------
 -- Query 3: Customer full names, invoice ID, invoice date
 -- and billing country for all customers from France.
--- Note: filter on customers.Country (where the customer lives),
--- not BillingCountry.
+-- Notes:
+--   * Filter on customers.Country (where the customer lives),
+--     not BillingCountry.
+--   * date() extracts the date only: the stored time is
+--     always 00:00:00 and carries no information.
 -- Result: 35 rows (5 customers x 7 invoices)
 -- ------------------------------------------------------------
 SELECT c.FirstName || ' ' || c.LastName AS FullName,
-       i.InvoiceId, i.InvoiceDate, i.BillingCountry
+       i.InvoiceId,
+       date(i.InvoiceDate) AS InvoiceDate,
+       i.BillingCountry
 FROM customers c
 JOIN invoices i ON c.CustomerId = i.CustomerId
 WHERE c.Country = 'France';
@@ -191,22 +196,22 @@ GROUP BY c.CustomerId
 ORDER BY TotalSpent DESC;
 
 
-
 -- ------------------------------------------------------------
 -- Query 16: Number of purchasing customers, number of tracks
--- purchased, and average tracks per customer (integer).
+-- purchased, and average tracks per customer.
 -- Notes:
 --   * COUNT(DISTINCT CustomerId) so repeat buyers count once
 --   * SUM(Quantity) counts units sold, not line items
---   * Integer division truncates 2240/59 = 37.96 to 37
--- Result: 59 customers, 2,240 tracks, 37 tracks/customer
+--   * Integer division truncates: 2240/59 would give 37
+--     instead of 38. The * 1.0 factor forces real division
+--     and ROUND(..., 0) rounds to the nearest integer.
+-- Result: 59 customers, 2,240 tracks, 38 tracks/customer
 -- ------------------------------------------------------------
 SELECT COUNT(DISTINCT i.CustomerId) AS "Clientes Con Compra",
        SUM(ii.Quantity) AS "Tracks Comprados",
-       SUM(ii.Quantity) / COUNT(DISTINCT i.CustomerId) AS "Promedio Por Cliente"
+       ROUND(SUM(ii.Quantity) * 1.0 / COUNT(DISTINCT i.CustomerId), 0) AS "Promedio Por Cliente"
 FROM invoices i
 JOIN invoice_items ii ON i.InvoiceId = ii.InvoiceId;
-
 
 
 -- ------------------------------------------------------------
@@ -222,4 +227,5 @@ SELECT strftime('%m', InvoiceDate) AS Mes,
 FROM invoices
 WHERE strftime('%Y', InvoiceDate) = '2009'
 GROUP BY Mes
+ORDER BY Mes;;
 ORDER BY Mes;
